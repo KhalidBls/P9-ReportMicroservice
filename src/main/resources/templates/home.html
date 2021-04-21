@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Report Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <h2>Generate Report</h2>
+    </div>
+
+    <div class="row">
+        <form action="#" th:action="@{/report}" th:object="${patient}" method="post" class="form-horizontal" style="width: 100%">
+            <div class="form-group blu-margin">
+                <select class="form-control" th:field="*{id}"  id="id">
+                    <label for="id" class="col-sm-2 control-label">Select Patient </label>
+                    <option th:each="patientDTO : ${patients}" th:value="${patientDTO.id}" th:text="${patientDTO.firstName} + ' ' + ${patientDTO.lastName}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <input class="btn btn-primary btn-sm" type="submit" value="Generate">
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
