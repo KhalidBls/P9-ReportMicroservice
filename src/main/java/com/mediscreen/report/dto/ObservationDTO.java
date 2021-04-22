@@ -7,6 +7,12 @@ public class ObservationDTO {
 
     public ObservationDTO(){}
 
+    public ObservationDTO(String id, String content, Integer idPatient) {
+        this.id = id;
+        this.content = content;
+        this.idPatient = idPatient;
+    }
+
     public String getId() {
         return id;
     }

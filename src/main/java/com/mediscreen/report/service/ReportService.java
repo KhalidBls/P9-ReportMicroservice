@@ -66,7 +66,7 @@ public class ReportService {
                 return "Borderline";
         }
 
-        return "None";
+        return "error";
     }
 
 
