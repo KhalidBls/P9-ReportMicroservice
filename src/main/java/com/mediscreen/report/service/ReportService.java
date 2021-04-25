@@ -7,10 +7,9 @@ import com.mediscreen.report.dto.PatientDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,6 +18,8 @@ public class ReportService {
 
     private final PatientProxy patientProxy;
     private final ObservationProxy observationProxy;
+   private static final String[] WORDS = {"Hémoglobine A1C","Microalbumine","Taille","Poids","Fumeur",
+           "Anormal","Cholestérol","Vertige","Rechute","Réaction","Anticorps"};
 
     @Autowired
     public ReportService(PatientProxy patientProxy,ObservationProxy observationProxy){
@@ -66,57 +67,27 @@ public class ReportService {
                 return "Borderline";
         }
 
-        return "error";
+        return "None";
     }
 
 
     public int ageCalculation(String birthdate){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date birthDateFormat = null;
-        try {
-            birthDateFormat = sdf.parse(birthdate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar now = Calendar.getInstance();
-        now.setTime(birthDateFormat);
-
-        int year = now.get(Calendar.YEAR);
-        int month = now.get(Calendar.MONTH) + 1;
-        int date = now.get(Calendar.DATE);
-
-        LocalDate localD = LocalDate.of(year, month, date);
+        LocalDate localD = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         LocalDate nowDate = LocalDate.now();
-        Period diff1 = Period.between(localD, nowDate);
-        return diff1.getYears();
+        return Period.between(localD, nowDate).getYears();
     }
 
     public Integer countAlertWord(List<ObservationDTO> observationsOfPatient){
-        List<String> words = new ArrayList<>();
-        words.add("Hémoglobine A1C");
-        words.add("Microalbumine");
-        words.add("Taille");
-        words.add("Poids");
-        words.add("Fumeur");
-        words.add("Anormal");
-        words.add("Cholestérol");
-        words.add("Vertige");
-        words.add("Rechute");
-        words.add("Réaction");
-        words.add("Anticorps");
-
         AtomicInteger numberOfWord = new AtomicInteger();
 
-        words.forEach(word -> {
+        for(String word : WORDS){
             observationsOfPatient.forEach(observation -> {
                 if(observation.getContent().toLowerCase().contains(word.toLowerCase())){
                     numberOfWord.getAndIncrement();
                 }
             });
-        });
-
+        }
         return numberOfWord.get();
-
     }
 
 }
